@@ -1,0 +1,110 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model Health {
+    id           Int    @id @unique @default(autoincrement())
+    route        String @unique
+    health_names String @unique
+}
+
+model User {
+    id         Int          @id @unique @default(autoincrement())
+    email      String       @unique
+    password   String
+    atTime     DateTime
+    Session    Session[]
+    Credential Credential[]
+    Note       Note[]
+    Card       Card[]
+    Wifi       Wifi[]
+    License    License[]
+
+    @@map("users")
+}
+
+model Session {
+    id       Int      @id @unique @default(autoincrement())
+    users_id Int
+    User     User     @relation(fields: [users_id], references: [id])
+    token    String
+    atTime   DateTime
+
+    @@map("sessions")
+}
+
+model Credential {
+    id       Int      @id @unique @default(autoincrement())
+    user_id  Int
+    User     User     @relation(fields: [user_id], references: [id])
+    title    String
+    url      String
+    username String
+    password String
+    atTime   DateTime
+
+    @@unique([user_id, title])
+    @@map("credentials")
+}
+
+model Note {
+    id      Int      @id @unique @default(autoincrement())
+    user_id Int
+    User    User     @relation(fields: [user_id], references: [id])
+    title   String
+    note    String
+    atTime  DateTime
+
+    @@unique([user_id, title])
+    @@map("notes")
+}
+
+model Card {
+    id          Int      @id @unique @default(autoincrement())
+    user_id     Int
+    User        User     @relation(fields: [user_id], references: [id])
+    title       String
+    card_number String
+    card_name   String
+    csc         String
+    card_date   String
+    password    String
+    virtual     Boolean
+    type        String
+    atTime      DateTime
+
+    @@unique([user_id, title])
+    @@map("cards")
+}
+
+model Wifi {
+    id       Int      @id @unique @default(autoincrement())
+    user_id  Int
+    User     User     @relation(fields: [user_id], references: [id])
+    title    String
+    name     String
+    password String
+    atTime   DateTime
+
+    @@map("wifi")
+}
+
+model License {
+    id      Int      @id @unique @default(autoincrement())
+    user_id Int
+    User    User     @relation(fields: [user_id], references: [id])
+    name    String
+    version String
+    key     String
+    atTime  DateTime
+
+    @@map("licenses")
+}
