@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { CardsController } from './cards.controller';
 import { CardsService } from './cards.service';
-import { CredentialsRepository } from 'src/credentials/credentials.repository';
+import { CardsRepository } from './cards.repository';
+import { PrismaService } from "../prisma/prisma.service"
 
 @Module({
     controllers: [CardsController],
-    providers: [CardsService, CredentialsRepository]
+    providers: [CardsService, CardsRepository, PrismaService]
 })
 export class CardsModule { }

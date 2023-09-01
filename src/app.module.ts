@@ -8,10 +8,13 @@ import { CardsModule } from './cards/cards.module';
 import { EraseModule } from './erase/erase.module';
 import { WifiModule } from './wifi/wifi.module';
 import { LicensesModule } from './licenses/licenses.module';
+import { AppRepository } from './app.repository';
+import { PrismaService } from './prisma/prisma.service';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-    imports: [UsersModule, CredentialsModule, NotesModule, CardsModule, EraseModule, WifiModule, LicensesModule],
+    imports: [UsersModule, CredentialsModule, NotesModule, CardsModule, EraseModule, WifiModule, LicensesModule, AuthModule],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [AppService, AppRepository, PrismaService],
 })
 export class AppModule { }

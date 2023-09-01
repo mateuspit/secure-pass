@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../src/app.module';
 import { PrismaService } from "../src/prisma/prisma.service"
 
 let app: INestApplication;
@@ -23,12 +23,12 @@ afterAll(async () => {
     await app.close();
 });
 
-describe('AppController (e2e)', () => {
+describe('NotesController (e2e)', () => {
 
     it('GET /health', () => {
         return request(app.getHttpServer())
-            .get('/health')
+            .get('/notes/health')
             .expect(200)
-            .expect(`I'm okay!`);
+            .expect(`notes okay!`);
     });
 });

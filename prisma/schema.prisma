@@ -14,6 +14,8 @@ model Health {
     id           Int    @id @unique @default(autoincrement())
     route        String @unique
     health_names String @unique
+
+    @@map("health")
 }
 
 model User {

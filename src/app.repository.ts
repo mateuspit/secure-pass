@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from "../prisma/prisma.service";
+import { PrismaService } from './prisma/prisma.service';
 
 @Injectable()
-export class EraseRepository {
+export class AppRepository {
     constructor(private readonly prisma: PrismaService) { }
 
-    async getHealthEraseRepository(): Promise<string> {
+    async getHealthAppRepository(): Promise<string> {
         return (await this.prisma.health.findFirst({
-            where: { route: "erase" }
+            where: { route: "app" }
         })).health_names;
     }
 }
