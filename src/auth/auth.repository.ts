@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from "../prisma/prisma.service";
+import { authDTO } from './DTO/auth.DTO';
 
 @Injectable()
 export class AuthRepository {
@@ -11,13 +12,4 @@ export class AuthRepository {
         })).health_names;
     }
 
-    async signUpRepository(cryptedPass: string, email: string): Promise<void> {
-        await this.prisma.user.create({
-            data: {
-                email,
-                password: cryptedPass,
-                atTime: new Date()
-            }
-        })
-    };
 }

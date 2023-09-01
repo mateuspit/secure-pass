@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from "../prisma/prisma.service";
+import { singUpInDTO } from './DTO/users.DTO';
 
 @Injectable()
 export class UsersRepository {
@@ -9,4 +10,20 @@ export class UsersRepository {
             where: { route: "users" }
         })).health_names;
     }
+
+    async findAccByEmailRepository(email: string): Promise<singUpInDTO> {
+        return await this.prisma.user.findFirst({
+            where: { email }
+        })
+    }
+
+    async signUpRepository(cryptedPass: string, email: string): Promise<void> {
+        await this.prisma.user.create({
+            data: {
+                email,
+                password: cryptedPass,
+                atTime: new Date()
+            }
+        })
+    };
 }

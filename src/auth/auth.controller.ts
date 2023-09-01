@@ -13,12 +13,11 @@ export class AuthController {
 
     @Post("sign-up")
     async signUpController(@Body() body: authDTO): Promise<void> {
-        await this.authService.signUpService(body)
+        await this.authService.signUpAuthService(body)
     }
 
     @Post("sign-in")
-    async signInController(@Body() body: authDTO): Promise<void> {
-        await this.authService.signInService();
+    async signInController(@Body() body: authDTO): Promise<object> {
+        return await this.authService.signInAuthService(body);
     }
-
 }

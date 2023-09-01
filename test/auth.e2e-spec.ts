@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
-import { PrismaService } from "../src/prisma/prisma.service"
-import { SignUpData } from './factory/auth.factory';
+import { PrismaService } from "../src/prisma/prisma.service";
+import { SignUpData } from "./factory/users.factory";
 
 let app: INestApplication;
 let prisma: PrismaService;
@@ -31,35 +31,56 @@ const PASS_WO_MIN_LOWERCASE = `S3NH@56789`;
 const PASS_WO_MIN_UPPERCASE = `s3nh@56789`;
 const PASS_WO_MIN_SYMBOLS = `s3nhA56789`;
 const SIGN_UP_ROUTE = `/auth/sign-up`;
+const SIGN_IN_ROUTE = `/auth/sign-in`;
+const HEALTH_ROUTE = `/auth/health`;
 
 describe('AuthController (e2e)', () => {
     it('GET /health', async () => {
         const { status, text } = await request(app.getHttpServer())
-            .get('/auth/health');
+            .get(HEALTH_ROUTE);
 
         expect(status).toBe(200);
         expect(text).toBe(`auth okay!`);
     });
 
-    it("POST /auth/sign-up => should return status code 200; Sucess case", async () => {
-        const signUpDate = new SignUpData().buildFaker();
+    it("POST /auth/sign-up => should successfully sign up a user and return status code 201", async () => {
+        const signUpData = new SignUpData().buildFaker();
 
-        const { status } = await request(app.getHttpServer())
+        const response = await request(app.getHttpServer())
             .post(SIGN_UP_ROUTE)
-            .send(signUpDate);
+            .send(signUpData);
 
-        expect(status).toBe(HttpStatus.CREATED);
+
+        expect(response.status).toBe(HttpStatus.CREATED);
 
         const userData = await prisma.user.findFirst({
-            where: { email: signUpDate.email }
+            where: { email: signUpData.email }
         });
 
+        expect(userData).toBeTruthy();
         expect(userData.password).toHaveLength(60);
-        expect(userData.email).toEqual(
-            expect.stringContaining(signUpDate.email)
-        );
+        expect(userData.email).toBe(signUpData.email);
     });
 
+    it("POST /auth/sign-up => should return status code 409 for conflict sign-up email input data", async () => {
+        const signUpData = await new SignUpData().buildDBFaker(prisma);
+
+        const response = await request(app.getHttpServer())
+            .post(SIGN_UP_ROUTE)
+            .send(signUpData);
+
+        expect(response.status).toBe(HttpStatus.CONFLICT);
+    });
+
+    it("POST /auth/sign-up => should return a message indicating email conflict", async () => {
+        const signUpData = await new SignUpData().buildDBFaker(prisma);
+
+        const response = await request(app.getHttpServer())
+            .post(SIGN_UP_ROUTE)
+            .send(signUpData);
+
+        expect(response.text).toContain(`E-mail ${signUpData.email} já está em uso!`);
+    });
 
     it("POST /auth/sign-up => should return status code 400 for wrong sign-up password input data", async () => {
         const scenarios = [
@@ -81,7 +102,6 @@ describe('AuthController (e2e)', () => {
             expect(response.status).toBe(HttpStatus.BAD_REQUEST);
         }
     });
-
 
     it("POST /auth/sign-up => should return status code 400 for non-string sign-up password input data", async () => {
         const signUpData = new SignUpData().buildFaker();
@@ -127,5 +147,20 @@ describe('AuthController (e2e)', () => {
 
             expect(response.status).toBe(HttpStatus.BAD_REQUEST);
         }
+    });
+
+    it("POST /auth/sign-up => should successfully sign in and return status code 200", async () => {
+        const signUpData = await new SignUpData().buildDBFaker(prisma);
+        const signInData = {
+            email: signUpData.email,
+            password: signUpData.password
+        }
+
+        const response = await request(app.getHttpServer())
+            .post(SIGN_IN_ROUTE)
+            .send(signInData);
+
+        expect(response.status).toBe(HttpStatus.CREATED);
+        expect(response.body.token).toBeTruthy();
     });
 });
