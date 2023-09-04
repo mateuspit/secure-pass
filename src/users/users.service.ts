@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
 import { singUpInDTO } from './DTO/users.DTO';
 import { EmailConflictAuthException } from './exceptions/users.exceptions';
@@ -30,5 +30,12 @@ export class UsersService {
         const SALTORROUNDS = 10;
         const cryptedPass = await bcrypt.hash(password, SALTORROUNDS);
         await this.userRepository.signUpRepository(cryptedPass, email);
+    }
+
+    async getUserByIdService(id: number) {
+        const user = await this.userRepository.getByIdRepository(id);
+        if (!user) throw new NotFoundException("User not found!");
+
+        return user;
     }
 }

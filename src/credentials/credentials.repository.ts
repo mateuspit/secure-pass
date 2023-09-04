@@ -31,7 +31,7 @@ export class CredentialsRepository {
     async createCredencialsRepository(credentialsBody: credentialsDTO): Promise<void> {
         await this.prisma.credential.create({
             data: {
-                atTime: new Date(),
+                atTime: credentialsBody.atTime,
                 password: credentialsBody.password,
                 title: credentialsBody.title,
                 url: credentialsBody.url,
@@ -40,5 +40,14 @@ export class CredentialsRepository {
             }
         })
     }
+    //type Prisma.CredentialUncheckedCreateInput = {
+    //    id?: number;
+    //    user_id: number;
+    //    title: string;
+    //    url: string;
+    //    username: string;
+    //    password: string;
+    //    atTime: Date | string;
+    //}
 
 }

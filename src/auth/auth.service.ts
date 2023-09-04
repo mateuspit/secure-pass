@@ -52,6 +52,16 @@ export class AuthService {
         return { token };
     }
 
+    checkToken(token: string) {
+        console.log("tokentoken", token)
+        const data = this.jwtService.verify(token, {
+            audience: this.AUDIENCE,
+            issuer: this.ISSUER
+        });
+        console.log("datadatadata", data)
+        return data;
+    }
+
     async getHealthAuthService(): Promise<string> {
         return await this.authRepository.getHealthAuthRepository();
     }

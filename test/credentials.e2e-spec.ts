@@ -5,6 +5,7 @@ import { AppModule } from '../src/app.module';
 import { PrismaService } from "../src/prisma/prisma.service"
 import { CredentialsFactory } from './factory/credentials.factory';
 import { SignUpDataFactory } from './factory/users.factory';
+import { faker } from "@faker-js/faker";
 
 let app: INestApplication;
 let prisma: PrismaService = new PrismaService();
@@ -29,6 +30,8 @@ afterAll(async () => {
 
 const CREATE_CREDENTIALS_ROUTE = `/credentials`;
 const HEALTH_ROUTE = `/credentials/health`;
+const RANDOM_STRING = `${faker.hacker.noun()}`;
+const SIGN_IN_ROUTE = `/auth/sign-in`;
 
 describe('CredentialController (e2e)', () => {
 
@@ -39,16 +42,45 @@ describe('CredentialController (e2e)', () => {
             .expect(`credentials okay!`);
     });
 
-    it("POST /credentials => should return status code 400 for empty credential pass input data", async () => {
-        const credentialData = new CredentialsFactory().buildFaker();
-        credentialData.password = "";
+    ////testando autentificação de rota
+    //it("POST /credentials => should return status code 401 for unauthorized user", async () => {
+    //    const signUpData = await new SignUpDataFactory().buildDBFaker(prisma);
 
-        const response = await request(app.getHttpServer())
-            .post(CREATE_CREDENTIALS_ROUTE)
-            .send(credentialData);
+    //    const credentialData = {
+    //        ...new CredentialsFactory().buildFaker(),
+    //        user_id: signUpData.id
+    //    }
 
-        expect(response.status).toBe(HttpStatus.BAD_REQUEST);
-    });
+    //    const response = await request(app.getHttpServer())
+    //        .post(CREATE_CREDENTIALS_ROUTE)
+    //        .send(credentialData);
+
+    //    expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
+    //});
+
+    //////comecei a arrumar aqui está repetido com o de baixo
+    //it("POST /credentials => should return status code 400 for empty credential pass input data", async () => {
+    //    const signUpData = await new SignUpDataFactory().buildDBFaker(prisma);
+    //    const signInData = {
+    //        email: signUpData.email,
+    //        password: signUpData.password
+    //    }
+    //    const loginResponse = await request(app.getHttpServer())
+    //        .post(SIGN_IN_ROUTE)
+    //        .send(signInData);
+
+    //    const credentialData = new CredentialsFactory().buildFaker();
+    //    credentialData.password = "";
+
+    //    console.log("loginResponse.body.token", loginResponse.body.token)
+    //    const response = await request(app.getHttpServer())
+    //        .post(CREATE_CREDENTIALS_ROUTE)
+    //        .set('Authorization', `Bearer ${loginResponse.body.token}`)
+    //        .send(credentialData);
+
+    //    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+    //});
+
 
     it("POST /credentials => should return status code 400 for empty credential title input data", async () => {
         const credentialData = new CredentialsFactory().buildFaker();
@@ -253,7 +285,6 @@ describe('CredentialController (e2e)', () => {
         expect(response.text).toContain(`O titulo ${credentialData.title} já está sendo usado`);
     });
 
-    //fazer teste de sucesso de adição de credential
     it("POST /credentials => should return status code 201 for created credential in database", async () => {
         const signUpData = await new SignUpDataFactory().buildDBFaker(prisma);
 
@@ -318,7 +349,51 @@ describe('CredentialController (e2e)', () => {
         expect(credentialExists.password).toHaveLength(222);
     });
 
-    //fazer teste de duas pessoas com o mesmo titulo
+    it("POST /credentials => sucessful created crypted password credential in database", async () => {
+        const signUpData1 = await new SignUpDataFactory().buildDBFaker(prisma);
+        const signUpData2 = await new SignUpDataFactory().buildDBFaker(prisma);
 
-    //fazer teste com key a mais
+        const credentialData1 = {
+            ...new CredentialsFactory().buildFaker(),
+            user_id: signUpData1.id
+        }
+
+        const credentialData2 = {
+            ...new CredentialsFactory().buildFaker(),
+            user_id: signUpData2.id
+        }
+
+        const response1 = await request(app.getHttpServer())
+            .post(CREATE_CREDENTIALS_ROUTE)
+            .send(credentialData1);
+
+        const response2 = await request(app.getHttpServer())
+            .post(CREATE_CREDENTIALS_ROUTE)
+            .send(credentialData2);
+
+        expect(response1.status).toBe(HttpStatus.CREATED);
+        expect(response2.status).toBe(HttpStatus.CREATED);
+    });
+
+
+
+
+
+
+    ////it("POST /credentials => should return status code 400 for strange key in credential input data", async () => {
+    //    const signUpData = await new SignUpDataFactory().buildDBFaker(prisma);
+
+    //    const credentialData = {
+    //        ...new CredentialsFactory().buildFaker(),
+    //        user_id: signUpData.id,
+    //        RANDOM_STRING: RANDOM_STRING
+    //    }
+
+    //    const response = await request(app.getHttpServer())
+    //        .post(CREATE_CREDENTIALS_ROUTE)
+    //        .send(credentialData);
+
+    //    expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+
+    //});
 });

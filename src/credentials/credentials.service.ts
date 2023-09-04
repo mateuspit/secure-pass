@@ -6,6 +6,11 @@ import { TitleCredentialAlreadyCreated } from './exceptions/credentials.exceptio
 
 @Injectable()
 export class CredentialsService {
+
+    async getCredentialByIdService(id: number): Promise<credentialsDTO> {
+        return await ;
+    }
+
     constructor(private readonly credentialRepository: CredentialsRepository) { }
     async getHealthCredentialService(): Promise<string> {
         return await this.credentialRepository.getHealthCredentialRepository();
@@ -33,6 +38,10 @@ export class CredentialsService {
         const cryptedCredentialPassword = cryptr.encrypt(credentialsBody.password);
 
         credentialsBody.password = cryptedCredentialPassword;
+
+        credentialsBody.atTime = new Date();
+
+        console.log(credentialsBody);
 
         await this.credentialRepository.createCredencialsRepository(credentialsBody);
     }
