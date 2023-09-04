@@ -13,5 +13,5 @@ export class noteDTO {
     @IsString()
     note: string;
 
-    userId: number;
+    user_id: number;
 }
