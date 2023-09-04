@@ -1,6 +1,30 @@
 import { IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl } from "class-validator";
 
 export class cardsDTO {
+    @IsNotEmpty()
+    @IsString()
+    virtual: boolean;
+
+    @IsNotEmpty()
+    @IsString()
+    card_number: string;
+
+    @IsNotEmpty()
+    @IsString()
+    card_name: string;
+
+    @IsNotEmpty()
+    @IsString()
+    csc: string;
+
+    @IsNotEmpty()
+    @IsString()
+    card_date: string;
+
+    @IsNotEmpty()
+    @IsString()
+    type: string;
+
     @IsDateString()
     @IsOptional()
     atTime?: Date
@@ -14,16 +38,8 @@ export class cardsDTO {
     user_id?: number;
 
     @IsNotEmpty()
-    @IsUrl()
-    url: string;
-
-    @IsNotEmpty()
     @IsString()
     title: string;
-
-    @IsNotEmpty()
-    @IsString()
-    username: string;
 
     @IsNotEmpty()
     @IsString()

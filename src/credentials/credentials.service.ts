@@ -53,7 +53,6 @@ export class CredentialsService {
 
         const descryptedCredentialPassword = cryptr.decrypt(credentialExists.password);
         credentialExists.password = descryptedCredentialPassword;
-        console.log("credentialExistscredentialExists", credentialExists)
 
         return await this.credentialRepository.getCredentialByIdRepository(id);
     }
