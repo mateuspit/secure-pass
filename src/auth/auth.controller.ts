@@ -16,11 +16,13 @@ export class AuthController {
     }
 
     @Post("sign-up")
+    @ApiOperation({ summary: "Make a request for sign-up" })
     async signUpController(@Body() body: authDTO): Promise<void> {
         await this.authService.signUpAuthService(body)
     }
 
     @Post("sign-in")
+    @ApiOperation({ summary: "Make a request for login" })
     async signInController(@Body() body: authDTO): Promise<object> {
         return await this.authService.signInAuthService(body);
     }

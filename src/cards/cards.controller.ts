@@ -18,11 +18,13 @@ export class CardsController {
     }
 
     @Post()
+    @ApiOperation({ summary: "Make a request for create new credit/debit/virtual card data" })
     async createCardsController(@Body() cardsBody: cardsDTO): Promise<void> {
         await this.cardService.createCardsService(cardsBody);
     }
 
     @Get()
+    @ApiOperation({ summary: "Make a request to get all card data" })
     //async getAllCardsController(@User() user: UserPrisma): Promise<cardsDTO[]> {
     async getAllCardsController(@User() user: UserPrisma): Promise<cardsDTO[]> {
         return await this.cardService.getAllCardService(user.id);
@@ -30,12 +32,14 @@ export class CardsController {
 
     @Get(":id")
     @ApiParam({ name: "id" })
+    @ApiOperation({ summary: "Make a request to get credit/debit/virtual card data by id" })
     async getCardByIdController(@Param("id", ParseIntPipe) id: number): Promise<cardsDTO> {
         return await this.cardService.getCardByIdService(id);
     }
 
     @Delete(":id")
     @ApiParam({ name: "id" })
+    @ApiOperation({ summary: "Make a request to delete credit/debit/virtual card data by id" })
     //async deleteCardByIdController(@Param("id", ParseIntPipe) id: number, @User() user: UserPrisma): Promise<void> {
     //    await this.cardService.deleteCardByIdService(id, user);
     async deleteCardByIdController(@Param("id", ParseIntPipe) id: number): Promise<void> {

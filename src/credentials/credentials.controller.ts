@@ -20,18 +20,21 @@ export class CredentialsController {
 
     //@UseGuards(AuthGuard) // gu
     @Post()
+    @ApiOperation({ summary: "Make a request to create a credential data" })
     async createCredencialsController(@Body() credentialsBody: credentialsDTO): Promise<void> {
         await this.credentialService.createCredencialsService(credentialsBody);
     }
 
     @Get(":id")
     @ApiParam({ name: "id" })
+    @ApiOperation({ summary: "Make a request to get a credential data by id" })
     async getCredentialByIdController(@Param("id", ParseIntPipe) id: number): Promise<credentialsDTO> {
         return await this.credentialService.getCredentialByIdService(id);
     }
 
 
     @Get()
+    @ApiOperation({ summary: "Make a request to get all credential data" })
     //async getAllCredentialController(@User() user: UserPrisma): Promise<credentialsDTO[]> {
     async getAllCredentialController(@User() user: UserPrisma): Promise<credentialsDTO[]> {
         return await this.credentialService.getAllCredentialService(user.id);
@@ -39,6 +42,7 @@ export class CredentialsController {
 
     @Delete(":id")
     @ApiParam({ name: "id" })
+    @ApiOperation({ summary: "Make a request to delete a credential data by id" })
     //async deleteCredentialByIdController(@Param("id", ParseIntPipe) id: number, @User() user: UserPrisma): Promise<void> {
     //    await this.credentialService.deleteCredentialByIdService(id, user);
     async deleteCredentialByIdController(@Param("id", ParseIntPipe) id: number): Promise<void> {
