@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { SwaggerTheme } from 'swagger-themes';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -16,7 +17,12 @@ async function bootstrap() {
         .build();
 
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup("api", app, document);
+    const theme = new SwaggerTheme('v3');
+    const options = {
+        explorer: true,
+        customCss: theme.getBuffer('dark')
+    };
+    SwaggerModule.setup("api", app, document, options);
 
     await app.listen(port, () => {
         console.log("Server is up and running on port: " + port);
