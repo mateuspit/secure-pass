@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post } from '@nestj
 import { CardsService } from './cards.service';
 import { User as UserPrisma } from '@prisma/client';
 import { cardsDTO } from './DTO/cards.DTO';
-import { User } from 'src/decorators/user.decorator';
+import { User } from "../decorators/user.decorator"
 
 @Controller('cards')
 export class CardsController {

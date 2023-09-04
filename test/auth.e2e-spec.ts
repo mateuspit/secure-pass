@@ -6,7 +6,7 @@ import { PrismaService } from "../src/prisma/prisma.service";
 import { SignUpDataFactory } from "./factory/users.factory";
 
 let app: INestApplication;
-let prisma: PrismaService;
+let prisma: PrismaService = new PrismaService();
 
 beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({

@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { NotesService } from './notes.service';
 import { noteDTO } from './DTO/notes.DTO';
-import { User } from 'src/decorators/user.decorator';
+import { User } from "../decorators/user.decorator";
 import { User as UserPrisma } from '@prisma/client';
 
 @Controller('notes')
