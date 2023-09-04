@@ -1,9 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
 import { WifiService } from './wifi.service';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('wifi')
-@ApiTags("Wifi routes")
 export class WifiController {
     constructor(private readonly wifiService: WifiService) { }
 
