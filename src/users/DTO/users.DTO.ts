@@ -1,16 +1,20 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { IsDateString, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsStrongPassword } from "class-validator";
 
 export class singUpInDTO {
     @IsNumber()
     @IsOptional()
+    @ApiProperty()
     id?: number;
 
     @IsDateString()
     @IsOptional()
+    @ApiProperty()
     atTime?: Date;
 
     @IsEmail()
     @IsNotEmpty()
+    @ApiProperty()
     email: string;
 
     @IsStrongPassword({
@@ -21,5 +25,6 @@ export class singUpInDTO {
         minSymbols: 1
     })
     @IsNotEmpty()
+    @ApiProperty()
     password: string;
 }
