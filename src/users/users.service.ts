@@ -18,6 +18,12 @@ export class UsersService {
         return accExists;
     }
 
+    async findUserByTokenService(token: string): Promise<singUpInDTO> {
+        const userDataByToken = await this.userRepository.findUserByTokenRepository(token);
+        if (!userDataByToken) throw new NotFoundException("User not found!");
+        return userDataByToken.User;
+    }
+
     async signUpUserService(body: singUpInDTO): Promise<void> {
         const { password, email } = body;
 

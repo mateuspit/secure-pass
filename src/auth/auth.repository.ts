@@ -4,6 +4,17 @@ import { authDTO } from './DTO/auth.DTO';
 
 @Injectable()
 export class AuthRepository {
+
+    async createSessionRepository(token: string, id: number): Promise<void> {
+        await this.prisma.session.create({
+            data: {
+                atTime: new Date(),
+                token,
+                users_id: id
+            }
+        })
+    }
+
     constructor(private readonly prisma: PrismaService) { }
 
     async getHealthAuthRepository(): Promise<string> {

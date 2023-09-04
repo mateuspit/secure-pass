@@ -4,6 +4,18 @@ import { singUpInDTO } from './DTO/users.DTO';
 
 @Injectable()
 export class UsersRepository {
+
+    async findUserByTokenRepository(token: string) {
+        return await this.prisma.session.findFirst({
+            where: {
+                token
+            },
+            include: {
+                User: true
+            }
+        });
+    }
+
     constructor(private readonly prisma: PrismaService) { }
     async getHealthUserRepository(): Promise<string> {
         return (await this.prisma.health.findFirst({
@@ -27,8 +39,8 @@ export class UsersRepository {
         })
     };
 
-    getByIdRepository(id: number) {
-        return this.prisma.user.findUnique({
+    async getByIdRepository(id: number) {
+        return await this.prisma.user.findUnique({
             where: { id }
         })
     }

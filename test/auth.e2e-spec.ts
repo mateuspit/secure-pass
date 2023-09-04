@@ -165,6 +165,27 @@ describe('AuthController (e2e)', () => {
         expect(response.body.token).toBeTruthy();
     });
 
+    it("POST /auth/sign-in => should create a session", async () => {
+        const signUpData = await new SignUpDataFactory().buildDBFaker(prisma);
+        const signInData = {
+            email: signUpData.email,
+            password: signUpData.password
+        }
+
+        const response = await request(app.getHttpServer())
+            .post(SIGN_IN_ROUTE)
+            .send(signInData);
+
+        const sessionExist = await prisma.session.findFirst({
+            where: {
+                token: response.body.token
+            }
+        })
+
+        expect(sessionExist.token).toBe(response.body.token);
+        expect(sessionExist).toBeTruthy();
+    });
+
     it("POST /auth/sign-in => should return status code 400 for wrong sign-in password input data", async () => {
         const signUpData = await new SignUpDataFactory().buildDBFaker(prisma);
         const signInData = {

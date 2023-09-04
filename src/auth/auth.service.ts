@@ -38,7 +38,11 @@ export class AuthService {
             throw new SignInPassAuthException();
         }
 
-        return this.createTokenService(body);
+        const token = this.createTokenService(body)
+
+        await this.authRepository.createSessionRepository(token.token, accExists.id);
+
+        return token;
     }
 
     createTokenService(body: authDTO) {

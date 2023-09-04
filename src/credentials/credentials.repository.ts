@@ -5,6 +5,32 @@ import { credentialsDTO } from './DTO/credentials.DTO';
 @Injectable()
 export class CredentialsRepository {
     constructor(private readonly prisma: PrismaService) { }
+
+    async deleteCredentialByIdRepository(id: number): Promise<void> {
+        await this.prisma.credential.delete({
+            where: {
+                id
+            }
+        })
+    }
+
+    async getAllCredentialRepository(user_id: number): Promise<credentialsDTO[]> {
+        return await this.prisma.credential.findMany({
+            where: {
+                user_id
+            }
+        });
+    }
+
+    async getCredentialByIdRepository(id: number): Promise<credentialsDTO> {
+        return await this.prisma.credential.findFirst({
+            where: {
+                id
+            }
+        });
+    }
+
+
     async getHealthCredentialRepository(): Promise<string> {
         return (await this.prisma.health.findFirst({
             where: { route: "credentials" }

@@ -6,3 +6,17 @@ export class TitleCredentialAlreadyCreated extends HttpException {
         super(message, HttpStatus.CONFLICT)
     }
 }
+
+export class CredentialNotFound extends HttpException {
+    constructor(id: number) {
+        const message = `A credential ${id} não foi encontrada`
+        super(message, HttpStatus.NOT_FOUND)
+    }
+}
+
+export class CredentialForbidden extends HttpException {
+    constructor() {
+        const message = `Acesso negado!`
+        super(message, HttpStatus.FORBIDDEN)
+    }
+}

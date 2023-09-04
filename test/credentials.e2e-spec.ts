@@ -28,7 +28,7 @@ afterAll(async () => {
     await prisma.$disconnect();
 })
 
-const CREATE_CREDENTIALS_ROUTE = `/credentials`;
+const CREATE_CREDENTIALS_ROUTE = `/credentials/`;
 const HEALTH_ROUTE = `/credentials/health`;
 const RANDOM_STRING = `${faker.hacker.noun()}`;
 const SIGN_IN_ROUTE = `/auth/sign-in`;
@@ -349,17 +349,21 @@ describe('CredentialController (e2e)', () => {
         expect(credentialExists.password).toHaveLength(222);
     });
 
-    it("POST /credentials => sucessful created crypted password credential in database", async () => {
+    it("POST /credentials => sucessful created credential by two user with the same title in database", async () => {
         const signUpData1 = await new SignUpDataFactory().buildDBFaker(prisma);
         const signUpData2 = await new SignUpDataFactory().buildDBFaker(prisma);
 
+        const sameTile = new CredentialsFactory().buildFaker().title;
+
         const credentialData1 = {
             ...new CredentialsFactory().buildFaker(),
+            title: sameTile,
             user_id: signUpData1.id
         }
 
         const credentialData2 = {
             ...new CredentialsFactory().buildFaker(),
+            title: sameTile,
             user_id: signUpData2.id
         }
 
@@ -374,6 +378,198 @@ describe('CredentialController (e2e)', () => {
         expect(response1.status).toBe(HttpStatus.CREATED);
         expect(response2.status).toBe(HttpStatus.CREATED);
     });
+
+    it("GET /credentials/:id => should return status code 200 credential searched by id", async () => {
+        const signUpData = await new SignUpDataFactory().buildDBFaker(prisma);
+
+        const credentialData = {
+            ...new CredentialsFactory().buildFaker(),
+            user_id: signUpData.id
+        }
+
+        await request(app.getHttpServer())
+            .post(CREATE_CREDENTIALS_ROUTE)
+            .send(credentialData);
+
+        const credentialExists = await prisma.credential.findFirst({
+            where: {
+                user_id: credentialData.user_id,
+                title: credentialData.title
+            }
+        })
+
+        const responseGetByIdCredential = await request(app.getHttpServer())
+            .get(`${CREATE_CREDENTIALS_ROUTE}${credentialExists.id}`);
+
+        expect(responseGetByIdCredential.status).toBe(HttpStatus.OK);
+
+    });
+
+    it("GET /credentials/:id => should return object credential data searched by id", async () => {
+        const signUpData = await new SignUpDataFactory().buildDBFaker(prisma);
+
+        const credentialData = {
+            ...new CredentialsFactory().buildFaker(),
+            user_id: signUpData.id
+        }
+
+        await request(app.getHttpServer())
+            .post(CREATE_CREDENTIALS_ROUTE)
+            .send(credentialData);
+
+        const credentialExists = await prisma.credential.findFirst({
+            where: {
+                user_id: credentialData.user_id,
+                title: credentialData.title
+            }
+        })
+
+        const responseGetByIdCredential = await request(app.getHttpServer())
+            .get(`${CREATE_CREDENTIALS_ROUTE}${credentialExists.id}`)
+
+        expect(responseGetByIdCredential.body).toEqual(
+            expect.objectContaining({
+                id: credentialExists.id,
+                user_id: credentialData.user_id,
+                title: credentialData.title,
+                url: credentialData.url,
+                username: credentialData.username,
+                password: credentialExists.password
+            })
+        )
+    });
+
+    it("GET /credentials/:id => should return status code 404 credential data searched by id not found", async () => {
+        const signUpData = await new SignUpDataFactory().buildDBFaker(prisma);
+
+        const credentialData = {
+            ...new CredentialsFactory().buildFaker(),
+            user_id: signUpData.id
+        }
+
+        await request(app.getHttpServer())
+            .post(CREATE_CREDENTIALS_ROUTE)
+            .send(credentialData);
+
+        const credentialExists = await prisma.credential.findFirst({
+            where: {
+                user_id: credentialData.user_id,
+                title: credentialData.title
+            }
+        })
+
+        const responseGetByIdCredential = await request(app.getHttpServer())
+            .get(`${CREATE_CREDENTIALS_ROUTE}${credentialExists.id + 10}`);
+
+
+        expect(responseGetByIdCredential.status).toBe(HttpStatus.NOT_FOUND)
+    });
+
+
+    //precisa da auth
+    //incompleto
+    it("GET /credentials => should return status code 200 for all geted credential in database", async () => {
+        const signUpData = await new SignUpDataFactory().buildDBFaker(prisma);
+
+        const signInData = {
+            email: signUpData.email,
+            password: signUpData.password
+        }
+
+        const responseSignIn = await request(app.getHttpServer())
+            .post(SIGN_IN_ROUTE)
+            .send(signInData);
+
+        const credentialData1 = {
+            ...new CredentialsFactory().buildFaker(),
+            user_id: signUpData.id
+        }
+
+        const credentialData2 = {
+            ...new CredentialsFactory().buildFaker(),
+            user_id: signUpData.id
+        }
+
+        const responsePostCredential1 = await request(app.getHttpServer())
+            .post(CREATE_CREDENTIALS_ROUTE)
+            .send(credentialData1);
+
+        const responsePostCredential2 = await request(app.getHttpServer())
+            .post(CREATE_CREDENTIALS_ROUTE)
+            .send(credentialData2);
+
+        expect(responsePostCredential1.status).toBe(HttpStatus.CREATED);
+        expect(responsePostCredential2.status).toBe(HttpStatus.CREATED);
+
+        const response = await request(app.getHttpServer())
+            .get(CREATE_CREDENTIALS_ROUTE)//get too
+
+    });
+
+    //erro de autentificação na rota buscando por id 401 un
+
+    //erro quando usuario pede um id que não é dele 403 forbidden
+
+    //mostrar senha
+    it("DELETE /credentials:id => should return status code 200 for deleted credential by id", async () => {
+        const signUpData = await new SignUpDataFactory().buildDBFaker(prisma);
+
+        const credentialData = {
+            ...new CredentialsFactory().buildFaker(),
+            user_id: signUpData.id
+        }
+
+        await request(app.getHttpServer())
+            .post(CREATE_CREDENTIALS_ROUTE)
+            .send(credentialData);
+
+        const credentialExists = await prisma.credential.findFirst({
+            where: {
+                user_id: credentialData.user_id,
+                title: credentialData.title
+            }
+        })
+
+        const response = await request(app.getHttpServer())
+            .delete(`${CREATE_CREDENTIALS_ROUTE}${credentialExists.id}`);
+
+        expect(response.status).toEqual(HttpStatus.OK);
+    });
+
+    it("DELETE /credentials:id => should return null for deleted credential by id", async () => {
+        const signUpData = await new SignUpDataFactory().buildDBFaker(prisma);
+
+        const credentialData = {
+            ...new CredentialsFactory().buildFaker(),
+            user_id: signUpData.id
+        }
+
+        await request(app.getHttpServer())
+            .post(CREATE_CREDENTIALS_ROUTE)
+            .send(credentialData);
+
+        const credentialExists = await prisma.credential.findFirst({
+            where: {
+                user_id: credentialData.user_id,
+                title: credentialData.title
+            }
+        })
+
+        const response = await request(app.getHttpServer())
+            .delete(`${CREATE_CREDENTIALS_ROUTE}${credentialExists.id}`);
+
+        const notCredentialExists = await prisma.credential.findFirst({
+            where: {
+                user_id: credentialData.user_id,
+                title: credentialData.title
+            }
+        })
+
+        expect(notCredentialExists).toBe(null);
+    });
+
+    //erro ao deletar credential q n existe
+    //erro ao dar o id da credential de outro user
 
 
 
