@@ -3,7 +3,7 @@ import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from "../src/prisma/prisma.service";
-import { SignUpData } from "./factory/users.factory";
+import { SignUpDataFactory } from "./factory/users.factory";
 
 let app: INestApplication;
 let prisma: PrismaService;
@@ -25,7 +25,7 @@ afterAll(async () => {
     await app.close();
 });
 
-const PASS_WO_MIN_LENGTH = new SignUpData().buildFaker().password.slice(0, -1);
+const PASS_WO_MIN_LENGTH = new SignUpDataFactory().buildFaker().password.slice(0, -1);
 const PASS_WO_MIN_NUMBER = `Senh@asdfg`;
 const PASS_WO_MIN_LOWERCASE = `S3NH@56789`;
 const PASS_WO_MIN_UPPERCASE = `s3nh@56789`;
@@ -33,7 +33,7 @@ const PASS_WO_MIN_SYMBOLS = `s3nhA56789`;
 const SIGN_UP_ROUTE = `/auth/sign-up`;
 const SIGN_IN_ROUTE = `/auth/sign-in`;
 const HEALTH_ROUTE = `/auth/health`;
-const NOT_DB_EMAIL = new SignUpData().buildFaker().email;
+const NOT_DB_EMAIL = new SignUpDataFactory().buildFaker().email;
 
 describe('AuthController (e2e)', () => {
     it('GET /health', async () => {
@@ -45,7 +45,7 @@ describe('AuthController (e2e)', () => {
     });
 
     it("POST /auth/sign-up => should successfully sign up a user and return status code 201", async () => {
-        const signUpData = new SignUpData().buildFaker();
+        const signUpData = new SignUpDataFactory().buildFaker();
 
         const response = await request(app.getHttpServer())
             .post(SIGN_UP_ROUTE)
@@ -64,7 +64,7 @@ describe('AuthController (e2e)', () => {
     });
 
     it("POST /auth/sign-up => should return status code 409 for conflict sign-up email input data", async () => {
-        const signUpData = await new SignUpData().buildDBFaker(prisma);
+        const signUpData = await new SignUpDataFactory().buildDBFaker(prisma);
 
         const response = await request(app.getHttpServer())
             .post(SIGN_UP_ROUTE)
@@ -74,7 +74,7 @@ describe('AuthController (e2e)', () => {
     });
 
     it("POST /auth/sign-up => should return a message indicating email conflict", async () => {
-        const signUpData = await new SignUpData().buildDBFaker(prisma);
+        const signUpData = await new SignUpDataFactory().buildDBFaker(prisma);
 
         const response = await request(app.getHttpServer())
             .post(SIGN_UP_ROUTE)
@@ -93,7 +93,7 @@ describe('AuthController (e2e)', () => {
         ];
 
         for (const scenario of scenarios) {
-            const signUpData = new SignUpData().buildFaker();
+            const signUpData = new SignUpDataFactory().buildFaker();
             signUpData.password = scenario.password;
 
             const response = await request(app.getHttpServer())
@@ -105,7 +105,7 @@ describe('AuthController (e2e)', () => {
     });
 
     it("POST /auth/sign-up => should return status code 400 for non-string sign-up password input data", async () => {
-        const signUpData = new SignUpData().buildFaker();
+        const signUpData = new SignUpDataFactory().buildFaker();
 
         const scenarios = [
             { password: 0 },
@@ -128,7 +128,7 @@ describe('AuthController (e2e)', () => {
     });
 
     it("POST /auth/sign-up => should return status code 400 for non-string sign-up email input data", async () => {
-        const signUpData = new SignUpData().buildFaker();
+        const signUpData = new SignUpDataFactory().buildFaker();
 
         const scenarios = [
             { email: 0 },
@@ -151,7 +151,7 @@ describe('AuthController (e2e)', () => {
     });
 
     it("POST /auth/sign-in => should successfully sign in and return status code 201 and token", async () => {
-        const signUpData = await new SignUpData().buildDBFaker(prisma);
+        const signUpData = await new SignUpDataFactory().buildDBFaker(prisma);
         const signInData = {
             email: signUpData.email,
             password: signUpData.password
@@ -166,7 +166,7 @@ describe('AuthController (e2e)', () => {
     });
 
     it("POST /auth/sign-in => should return status code 400 for wrong sign-in password input data", async () => {
-        const signUpData = await new SignUpData().buildDBFaker(prisma);
+        const signUpData = await new SignUpDataFactory().buildDBFaker(prisma);
         const signInData = {
             email: signUpData.email
         }
@@ -192,7 +192,7 @@ describe('AuthController (e2e)', () => {
     });
 
     it("POST /auth/sign-in => should return status code 400 for non-string sign-in password input data", async () => {
-        const signUpData = await new SignUpData().buildDBFaker(prisma);
+        const signUpData = await new SignUpDataFactory().buildDBFaker(prisma);
         const signInData = {
             email: signUpData.email
         }
@@ -218,7 +218,7 @@ describe('AuthController (e2e)', () => {
     });
 
     it("POST /auth/sign-in => should return status code 400 for non-string sign-in email input data", async () => {
-        const signUpData = await new SignUpData().buildDBFaker(prisma);
+        const signUpData = await new SignUpDataFactory().buildDBFaker(prisma);
         const signInData = {
             password: signUpData.password
         }
@@ -246,7 +246,7 @@ describe('AuthController (e2e)', () => {
     it("POST /auth/sign-in => should return status code 401 for no sign-in email data in DB", async () => {
         const invalidCredentials = {
             email: NOT_DB_EMAIL,
-            password: new SignUpData().buildFaker().password
+            password: new SignUpDataFactory().buildFaker().password
         };
 
         const response = await request(app.getHttpServer())
@@ -259,7 +259,7 @@ describe('AuthController (e2e)', () => {
     it("POST /auth/sign-in => should return a message indicating email unauthorized in sign in", async () => {
         const invalidCredentials = {
             email: NOT_DB_EMAIL,
-            password: new SignUpData().buildFaker().password
+            password: new SignUpDataFactory().buildFaker().password
         };
 
         const response = await request(app.getHttpServer())
@@ -270,10 +270,10 @@ describe('AuthController (e2e)', () => {
     });
 
     it("POST /auth/sign-in => should return a message indicating wrong password in sign in", async () => {
-        const signUpData = await new SignUpData().buildDBFaker(prisma);
+        const signUpData = await new SignUpDataFactory().buildDBFaker(prisma);
         const invalidCredentials = {
             email: signUpData.email,
-            password: new SignUpData().buildFaker().password + new SignUpData().buildFaker().password
+            password: new SignUpDataFactory().buildFaker().password + new SignUpDataFactory().buildFaker().password
         };
 
         const response = await request(app.getHttpServer())
