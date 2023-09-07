@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { NotesService } from './notes.service';
 import { noteDTO } from './DTO/notes.DTO';
 import { User } from "../decorators/user.decorator";
 import { User as UserPrisma } from '@prisma/client';
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags("Notes routes")
 @Controller('notes')
@@ -13,6 +13,7 @@ export class NotesController {
 
     @Get("health")
     @ApiOperation({ summary: "Check availability in route notes" })
+    @ApiResponse({ status: HttpStatus.OK, description: "Notes route working!" })
     async getHealthNoteController(): Promise<string> {
         return await this.noteService.getHealthNoteService();
     }

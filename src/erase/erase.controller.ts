@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Get } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus } from '@nestjs/common';
 import { EraseService } from './erase.service';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { authDTO } from 'src/auth/DTO/auth.DTO';
 
 @Controller('erase')
@@ -16,6 +16,7 @@ export class EraseController {
 
     @Delete()
     @ApiOperation({ summary: "Delete your account with ALL your data" })
+    @ApiResponse({ status: HttpStatus.OK, description: "Erase route working!" })
     async deleteEverythingController(@Body() bodyPassword: Pick<authDTO, 'password'>): Promise<void> {
         await this.eraseService.deleteEverythingService(bodyPassword.password);
     }

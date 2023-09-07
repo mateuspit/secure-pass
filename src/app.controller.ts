@@ -1,6 +1,6 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, HttpStatus } from '@nestjs/common';
 import { AppService } from './app.service';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags("Application main")
 @Controller("health")
@@ -9,6 +9,7 @@ export class AppController {
 
     @Get()
     @ApiOperation({ summary: "Check appliation availability" })
+    @ApiResponse({ status: HttpStatus.OK, description: "Wifi route working!" })
     async getHealthAppController(): Promise<string> {
         return await this.appService.getHealthAppService();
     }

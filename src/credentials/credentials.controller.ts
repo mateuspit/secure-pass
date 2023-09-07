@@ -1,10 +1,10 @@
-import { Body, Controller, Delete, ExecutionContext, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, ExecutionContext, Get, HttpStatus, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
 import { CredentialsService } from './credentials.service';
 import { credentialsDTO } from './DTO/credentials.DTO';
 import { AuthGuard } from "../guards/auth.guards";
 import { User as UserPrisma } from '@prisma/client';
 import { User } from "../decorators/user.decorator";
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags("Credentials routes")
 @Controller('credentials')
@@ -14,6 +14,7 @@ export class CredentialsController {
 
     @Get("health")
     @ApiOperation({ summary: "Check availability in route credentials" })
+    @ApiResponse({ status: HttpStatus.OK, description: "Credential route working!" })
     async getHealthCredentialController(): Promise<string> {
         return await this.credentialService.getHealthCredentialService();
     }
