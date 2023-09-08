@@ -20,12 +20,16 @@ export class NotesController {
 
     @Post()
     @ApiOperation({ summary: "Make a request to create a new note data" })
+    @ApiResponse({ status: HttpStatus.CREATED, description: "Created note info data" })
+    @ApiResponse({ status: HttpStatus.CONFLICT, description: "Title in note info already in use!" })
+    @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Some user notes input data invalid!" })
     async createNoteController(@Body() noteBody: noteDTO): Promise<void> {
         await this.noteService.createNoteService(noteBody)
     }
 
     @Get()
     @ApiOperation({ summary: "Make a request to get all note data by id" })
+    @ApiResponse({ status: HttpStatus.OK, description: "All user notes info data returned!" })
     //async getAllNoteController(@User() user: UserPrisma): Promise<noteDTO[]> {
     async getAllNoteController(@User() user: UserPrisma): Promise<noteDTO[]> {
         return await this.noteService.getAllNoteService(user.id);
@@ -34,6 +38,8 @@ export class NotesController {
     @Get(":id")
     @ApiOperation({ summary: "Make a request to get a note data by id" })
     @ApiParam({ name: "id" })
+    @ApiResponse({ status: HttpStatus.OK, description: "Specific user notes data info returned!" })
+    @ApiResponse({ status: HttpStatus.NOT_FOUND, description: "Specific user notes data info not found!" })
     async getNoteByIdController(@Param("id", ParseIntPipe) id: number): Promise<noteDTO> {
         return await this.noteService.getNoteByIdService(id);
     }
@@ -41,6 +47,9 @@ export class NotesController {
     @Delete(":id")
     @ApiParam({ name: "id" })
     @ApiOperation({ summary: "Make a request to delete a note data by id" })
+    @ApiResponse({ status: HttpStatus.OK, description: "Specific user note data info deleted!" })
+    @ApiResponse({ status: HttpStatus.NOT_FOUND, description: "Specific user note data info not found" })
+    @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Specific user note data info belongs to another user" })
     //async deleteNoteByIdController(@Param("id", ParseIntPipe) id: number, @User() user: UserPrisma): Promise<void> {
     //    await this.noteService.deleteNoteByIdService(id, user);
     async deleteNoteByIdController(@Param("id", ParseIntPipe) id: number): Promise<void> {
