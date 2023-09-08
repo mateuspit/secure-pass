@@ -21,8 +21,8 @@ export class CardsController {
     @Post()
     @ApiOperation({ summary: "Make a request for create new credit/debit/virtual card data" })
     @ApiResponse({ status: HttpStatus.CREATED, description: "Created card info data" })
-    @ApiResponse({ status: HttpStatus.CONFLICT, description: "Title already in use!" })
-    @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "User cards input data invalid!" })
+    @ApiResponse({ status: HttpStatus.CONFLICT, description: "Title in card info already in use!" })
+    @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Some user cards input data invalid!" })
     async createCardsController(@Body() cardsBody: cardsDTO): Promise<void> {
         await this.cardService.createCardsService(cardsBody);
     }
@@ -39,7 +39,7 @@ export class CardsController {
     @ApiParam({ name: "id" })
     @ApiOperation({ summary: "Make a request to get credit/debit/virtual card data by id" })
     @ApiResponse({ status: HttpStatus.OK, description: "Specific user card data info returned!" })
-    @ApiResponse({ status: HttpStatus.NOT_FOUND, description: "Speciific user card data info not found!" })
+    @ApiResponse({ status: HttpStatus.NOT_FOUND, description: "Specific user card data info not found!" })
     async getCardByIdController(@Param("id", ParseIntPipe) id: number): Promise<cardsDTO> {
         return await this.cardService.getCardByIdService(id);
     }
@@ -48,6 +48,8 @@ export class CardsController {
     @ApiParam({ name: "id" })
     @ApiOperation({ summary: "Make a request to delete credit/debit/virtual card data by id" })
     @ApiResponse({ status: HttpStatus.OK, description: "Specific user card data info deleted!" })
+    @ApiResponse({ status: HttpStatus.NOT_FOUND, description: "Specific user card data info not found" })
+    @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Specific user card data info belongs to another user" })
     //async deleteCardByIdController(@Param("id", ParseIntPipe) id: number, @User() user: UserPrisma): Promise<void> {
     //    await this.cardService.deleteCardByIdService(id, user);
     async deleteCardByIdController(@Param("id", ParseIntPipe) id: number): Promise<void> {

@@ -22,6 +22,9 @@ export class CredentialsController {
     //@UseGuards(AuthGuard) // gu
     @Post()
     @ApiOperation({ summary: "Make a request to create a credential data" })
+    @ApiResponse({ status: HttpStatus.CREATED, description: "Created credential info data" })
+    @ApiResponse({ status: HttpStatus.CONFLICT, description: "Title in credential info already in use!" })
+    @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Some user credential input data invalid!" })
     async createCredencialsController(@Body() credentialsBody: credentialsDTO): Promise<void> {
         await this.credentialService.createCredencialsService(credentialsBody);
     }
@@ -29,6 +32,8 @@ export class CredentialsController {
     @Get(":id")
     @ApiParam({ name: "id" })
     @ApiOperation({ summary: "Make a request to get a credential data by id" })
+    @ApiResponse({ status: HttpStatus.OK, description: "Specific user credential data info returned!" })
+    @ApiResponse({ status: HttpStatus.NOT_FOUND, description: "Specific user credential data info not found!" })
     async getCredentialByIdController(@Param("id", ParseIntPipe) id: number): Promise<credentialsDTO> {
         return await this.credentialService.getCredentialByIdService(id);
     }
@@ -36,6 +41,7 @@ export class CredentialsController {
 
     @Get()
     @ApiOperation({ summary: "Make a request to get all credential data" })
+    @ApiResponse({ status: HttpStatus.OK, description: "All user credential info data returned!" })
     //async getAllCredentialController(@User() user: UserPrisma): Promise<credentialsDTO[]> {
     async getAllCredentialController(@User() user: UserPrisma): Promise<credentialsDTO[]> {
         return await this.credentialService.getAllCredentialService(user.id);
@@ -44,6 +50,9 @@ export class CredentialsController {
     @Delete(":id")
     @ApiParam({ name: "id" })
     @ApiOperation({ summary: "Make a request to delete a credential data by id" })
+    @ApiResponse({ status: HttpStatus.OK, description: "Specific user credential data info deleted!" })
+    @ApiResponse({ status: HttpStatus.NOT_FOUND, description: "Specific user credential data info not found" })
+    @ApiResponse({ status: HttpStatus.FORBIDDEN, description: "Specific user credential data info belongs to another user" })
     //async deleteCredentialByIdController(@Param("id", ParseIntPipe) id: number, @User() user: UserPrisma): Promise<void> {
     //    await this.credentialService.deleteCredentialByIdService(id, user);
     async deleteCredentialByIdController(@Param("id", ParseIntPipe) id: number): Promise<void> {
