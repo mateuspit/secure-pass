@@ -36,7 +36,7 @@ export class CardsController {
     }
 
     @Get(":id")
-    @ApiParam({ name: "id" })
+    @ApiParam({ name: "id", description: `Given what id card must be picked` })
     @ApiOperation({ summary: "Make a request to get credit/debit/virtual card data by id" })
     @ApiResponse({ status: HttpStatus.OK, description: "Specific user card data info returned!" })
     @ApiResponse({ status: HttpStatus.NOT_FOUND, description: "Specific user card data info not found!" })
@@ -45,7 +45,7 @@ export class CardsController {
     }
 
     @Delete(":id")
-    @ApiParam({ name: "id" })
+    @ApiParam({ name: "id", description: `Given what id card must be deleted` })
     @ApiOperation({ summary: "Make a request to delete credit/debit/virtual card data by id" })
     @ApiResponse({ status: HttpStatus.OK, description: "Specific user card data info deleted!" })
     @ApiResponse({ status: HttpStatus.NOT_FOUND, description: "Specific user card data info not found" })

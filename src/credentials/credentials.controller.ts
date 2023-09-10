@@ -30,7 +30,7 @@ export class CredentialsController {
     }
 
     @Get(":id")
-    @ApiParam({ name: "id" })
+    @ApiParam({ name: "id", description: `Given what id credential must be picked` })
     @ApiOperation({ summary: "Make a request to get a credential data by id" })
     @ApiResponse({ status: HttpStatus.OK, description: "Specific user credential data info returned!" })
     @ApiResponse({ status: HttpStatus.NOT_FOUND, description: "Specific user credential data info not found!" })
@@ -48,7 +48,7 @@ export class CredentialsController {
     }
 
     @Delete(":id")
-    @ApiParam({ name: "id" })
+    @ApiParam({ name: "id", description: `Given what id credential must be deleted` })
     @ApiOperation({ summary: "Make a request to delete a credential data by id" })
     @ApiResponse({ status: HttpStatus.OK, description: "Specific user credential data info deleted!" })
     @ApiResponse({ status: HttpStatus.NOT_FOUND, description: "Specific user credential data info not found" })
