@@ -37,7 +37,7 @@ export class NotesController {
 
     @Get(":id")
     @ApiOperation({ summary: "Make a request to get a note data by id" })
-    @ApiParam({ name: "id", description: `Given what id note must be picked` })
+    @ApiParam({ name: "id", description: `Given what id note must be picked`, example: 1 })
     @ApiResponse({ status: HttpStatus.OK, description: "Specific user notes data info returned!" })
     @ApiResponse({ status: HttpStatus.NOT_FOUND, description: "Specific user notes data info not found!" })
     async getNoteByIdController(@Param("id", ParseIntPipe) id: number): Promise<NoteDTO> {
@@ -45,7 +45,7 @@ export class NotesController {
     }
 
     @Delete(":id")
-    @ApiParam({ name: "id", description: `Given what id note must be deleted` })
+    @ApiParam({ name: "id", description: `Given what id note must be deleted`, example: 1 })
     @ApiOperation({ summary: "Make a request to delete a note data by id" })
     @ApiResponse({ status: HttpStatus.OK, description: "Specific user note data info deleted!" })
     @ApiResponse({ status: HttpStatus.NOT_FOUND, description: "Specific user note data info not found" })

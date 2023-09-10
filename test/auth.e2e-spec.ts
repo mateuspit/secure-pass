@@ -150,7 +150,7 @@ describe('AuthController (e2e)', () => {
         }
     });
 
-    it("POST /auth/sign-in => should successfully sign in and return status code 201 and token", async () => {
+    it("POST /auth/sign-in => should successfully sign in and return status code 200 and token", async () => {
         const signUpData = await new SignUpDataFactory().buildDBFaker(prisma);
         const signInData = {
             email: signUpData.email,
@@ -161,7 +161,7 @@ describe('AuthController (e2e)', () => {
             .post(SIGN_IN_ROUTE)
             .send(signInData);
 
-        expect(response.status).toBe(HttpStatus.CREATED);
+        expect(response.status).toBe(HttpStatus.OK);
         expect(response.body.token).toBeTruthy();
     });
 
