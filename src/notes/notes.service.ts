@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { NotesRepository } from './notes.repository';
-import { noteDTO } from './DTO/notes.DTO';
+import { NoteDTO } from './DTO/notes.DTO';
 import { NoteNotFound, TitleNoteAlreadyCreated } from './exceptions/notes.exceptions';
 
 @Injectable()
@@ -18,12 +18,12 @@ export class NotesService {
         await this.noteRepository.deleteNoteByIdRepository(id);
     }
 
-    async findNoteByIdService(id: number): Promise<noteDTO> {
+    async findNoteByIdService(id: number): Promise<NoteDTO> {
         const noteExists = await this.noteRepository.findNoteByIdRepository(id);
         return noteExists;
     }
 
-    async getNoteByIdService(id: number): Promise<noteDTO> {
+    async getNoteByIdService(id: number): Promise<NoteDTO> {
         const noteExists = await this.findNoteByIdService(id);
         if (!noteExists) {
             throw new NoteNotFound(id);
@@ -40,8 +40,8 @@ export class NotesService {
         return await this.noteRepository.getNoteByIdRepository(id);
     }
 
-    async getAllNoteService(user_id: number): Promise<noteDTO[]> {
-        const descriptedNotes: noteDTO[] = [];
+    async getAllNoteService(user_id: number): Promise<NoteDTO[]> {
+        const descriptedNotes: NoteDTO[] = [];
         const notesExists = await this.noteRepository.getAllNoteRepository(user_id);
         const Cryptr = require('cryptr');
         const cryptr = new Cryptr(process.env.CRYPTO_SECRET);
@@ -57,12 +57,12 @@ export class NotesService {
         return descriptedNotes;
     }
 
-    async findNoteByTitleAndUserIdService(title: string, user_id: number): Promise<noteDTO> {
+    async findNoteByTitleAndUserIdService(title: string, user_id: number): Promise<NoteDTO> {
         const noteExists = await this.noteRepository.findNoteByTitleAndUserIdRepository(title, user_id);
         return noteExists;
     }
 
-    async createNoteService(noteBody: noteDTO): Promise<void> {
+    async createNoteService(noteBody: NoteDTO): Promise<void> {
         const noteExists = await this.findNoteByTitleAndUserIdService(noteBody.title, noteBody.user_id);
         if (noteExists) {
             throw new TitleNoteAlreadyCreated(noteBody.title);

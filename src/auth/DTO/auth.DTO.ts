@@ -1,20 +1,23 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsDateString, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, IsStrongPassword } from "class-validator";
 
-export class authDTO {
+export { User as authDTO }
+export class User {
     @IsNumber()
     @IsOptional()
-    @ApiProperty()
     id?: number;
 
     @IsDateString()
     @IsOptional()
-    @ApiProperty()
     atTime?: Date;
 
     @IsEmail()
     @IsNotEmpty()
-    @ApiProperty()
+    @ApiProperty({
+        example: "user123@gmail.com",
+        description: "Email given by client",
+        required: true
+    })
     email: string;
 
     @IsStrongPassword({
@@ -26,9 +29,13 @@ export class authDTO {
     })
     @IsNotEmpty()
     @ApiProperty()
+    @ApiProperty({
+        example: "S3nh@56789",
+        description: "Password with minimum lenght 10 caracters, 1 number, 1 lowercase, 1 upercase and 1 symbol. Given by client",
+        required: true
+    })
     password: string;
 }
-
 //export class singUpDTO {
 //    @IsEmail()
 //    @IsNotEmpty()

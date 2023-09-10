@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from "../prisma/prisma.service";
-import { cardsDTO } from './DTO/cards.DTO';
+import { CardsDTO } from './DTO/cards.DTO';
 
 @Injectable()
 export class CardsRepository {
@@ -14,7 +14,7 @@ export class CardsRepository {
         })
     }
 
-    async getCardByIdRepository(id: number): Promise<cardsDTO> {
+    async getCardByIdRepository(id: number): Promise<CardsDTO> {
         return await this.prisma.card.findFirst({
             where: {
                 id
@@ -22,7 +22,7 @@ export class CardsRepository {
         });
     }
 
-    async findCardByIdRepository(id: number): Promise<cardsDTO> {
+    async findCardByIdRepository(id: number): Promise<CardsDTO> {
         return await this.prisma.card.findFirst({
             where: {
                 id
@@ -30,7 +30,7 @@ export class CardsRepository {
         })
     }
 
-    async getAllCardRepository(user_id: number): Promise<cardsDTO[]> {
+    async getAllCardRepository(user_id: number): Promise<CardsDTO[]> {
         return await this.prisma.card.findMany({
             where: {
                 user_id
@@ -38,7 +38,7 @@ export class CardsRepository {
         });
     }
 
-    async createCardsRepository(cardsBody: cardsDTO): Promise<void> {
+    async createCardsRepository(cardsBody: CardsDTO): Promise<void> {
         await this.prisma.card.create({
             data: {
                 atTime: cardsBody.atTime,
@@ -55,7 +55,7 @@ export class CardsRepository {
         })
     }
 
-    async findCardByTitleAndUserIdRepository(title: string, user_id: number): Promise<cardsDTO> {
+    async findCardByTitleAndUserIdRepository(title: string, user_id: number): Promise<CardsDTO> {
         return await this.prisma.card.findFirst({
             where: {
                 title,

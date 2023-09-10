@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { NotesService } from './notes.service';
-import { noteDTO } from './DTO/notes.DTO';
+import { NoteDTO } from './DTO/notes.DTO';
 import { User } from "../decorators/user.decorator";
 import { User as UserPrisma } from '@prisma/client';
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -23,7 +23,7 @@ export class NotesController {
     @ApiResponse({ status: HttpStatus.CREATED, description: "Created note info data" })
     @ApiResponse({ status: HttpStatus.CONFLICT, description: "Title in note info already in use!" })
     @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Some user notes input data invalid!" })
-    async createNoteController(@Body() noteBody: noteDTO): Promise<void> {
+    async createNoteController(@Body() noteBody: NoteDTO): Promise<void> {
         await this.noteService.createNoteService(noteBody)
     }
 
@@ -31,7 +31,7 @@ export class NotesController {
     @ApiOperation({ summary: "Make a request to get all note data by id" })
     @ApiResponse({ status: HttpStatus.OK, description: "All user notes info data returned!" })
     //async getAllNoteController(@User() user: UserPrisma): Promise<noteDTO[]> {
-    async getAllNoteController(@User() user: UserPrisma): Promise<noteDTO[]> {
+    async getAllNoteController(@User() user: UserPrisma): Promise<NoteDTO[]> {
         return await this.noteService.getAllNoteService(user.id);
     }
 
@@ -40,7 +40,7 @@ export class NotesController {
     @ApiParam({ name: "id" })
     @ApiResponse({ status: HttpStatus.OK, description: "Specific user notes data info returned!" })
     @ApiResponse({ status: HttpStatus.NOT_FOUND, description: "Specific user notes data info not found!" })
-    async getNoteByIdController(@Param("id", ParseIntPipe) id: number): Promise<noteDTO> {
+    async getNoteByIdController(@Param("id", ParseIntPipe) id: number): Promise<NoteDTO> {
         return await this.noteService.getNoteByIdService(id);
     }
 

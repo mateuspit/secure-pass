@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { CardsService } from './cards.service';
 import { User as UserPrisma } from '@prisma/client';
-import { cardsDTO } from './DTO/cards.DTO';
+import { CardsDTO } from './DTO/cards.DTO';
 import { User } from "../decorators/user.decorator"
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -23,7 +23,7 @@ export class CardsController {
     @ApiResponse({ status: HttpStatus.CREATED, description: "Created card info data" })
     @ApiResponse({ status: HttpStatus.CONFLICT, description: "Title in card info already in use!" })
     @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Some user cards input data invalid!" })
-    async createCardsController(@Body() cardsBody: cardsDTO): Promise<void> {
+    async createCardsController(@Body() cardsBody: CardsDTO): Promise<void> {
         await this.cardService.createCardsService(cardsBody);
     }
 
@@ -31,7 +31,7 @@ export class CardsController {
     @ApiOperation({ summary: "Make a request to get all card data" })
     @ApiResponse({ status: HttpStatus.OK, description: "All user cards info data returned!" })
     //async getAllCardsController(@User() user: UserPrisma): Promise<cardsDTO[]> {
-    async getAllCardsController(@User() user: UserPrisma): Promise<cardsDTO[]> {
+    async getAllCardsController(@User() user: UserPrisma): Promise<CardsDTO[]> {
         return await this.cardService.getAllCardService(user.id);
     }
 
@@ -40,7 +40,7 @@ export class CardsController {
     @ApiOperation({ summary: "Make a request to get credit/debit/virtual card data by id" })
     @ApiResponse({ status: HttpStatus.OK, description: "Specific user card data info returned!" })
     @ApiResponse({ status: HttpStatus.NOT_FOUND, description: "Specific user card data info not found!" })
-    async getCardByIdController(@Param("id", ParseIntPipe) id: number): Promise<cardsDTO> {
+    async getCardByIdController(@Param("id", ParseIntPipe) id: number): Promise<CardsDTO> {
         return await this.cardService.getCardByIdService(id);
     }
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from "../prisma/prisma.service";
-import { noteDTO } from './DTO/notes.DTO';
+import { NoteDTO } from './DTO/notes.DTO';
 
 @Injectable()
 export class NotesRepository {
@@ -14,7 +14,7 @@ export class NotesRepository {
         })
     }
 
-    async getNoteByIdRepository(id: number): Promise<noteDTO> {
+    async getNoteByIdRepository(id: number): Promise<NoteDTO> {
         return await this.prisma.note.findFirst({
             where: {
                 id
@@ -22,7 +22,7 @@ export class NotesRepository {
         });
     }
 
-    async findNoteByIdRepository(id: number): Promise<noteDTO> {
+    async findNoteByIdRepository(id: number): Promise<NoteDTO> {
         return await this.prisma.note.findFirst({
             where: {
                 id
@@ -30,7 +30,7 @@ export class NotesRepository {
         })
     }
 
-    async getAllNoteRepository(user_id: number): Promise<noteDTO[]> {
+    async getAllNoteRepository(user_id: number): Promise<NoteDTO[]> {
         return await this.prisma.note.findMany({
             where: {
                 user_id
@@ -38,7 +38,7 @@ export class NotesRepository {
         });
     }
 
-    async findNoteByTitleAndUserIdRepository(title: string, user_id: number): Promise<noteDTO> {
+    async findNoteByTitleAndUserIdRepository(title: string, user_id: number): Promise<NoteDTO> {
         return await this.prisma.note.findFirst({
             where: {
                 title,
@@ -48,7 +48,7 @@ export class NotesRepository {
     }
 
 
-    async createNoteRepository(noteBody: noteDTO) {
+    async createNoteRepository(noteBody: NoteDTO) {
         await this.prisma.note.create({
             data: {
                 atTime: noteBody.atTime,
