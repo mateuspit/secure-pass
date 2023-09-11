@@ -32,6 +32,8 @@ export class AuthService {
             throw new SignInEmailAuthException(email);
         }
 
+        body.id = accExists.id;
+
         const passIsCorrect = bcrypt.compareSync(password, accExists.password);
 
         if (!passIsCorrect) {
@@ -45,7 +47,7 @@ export class AuthService {
         return token;
     }
 
-    createTokenService(body: authDTO) {
+    private createTokenService(body: authDTO) {
         const { id, email } = body;
         const token = this.jwtService.sign({ email }, {
             expiresIn: this.EXPIRATION_TIME,
@@ -57,12 +59,11 @@ export class AuthService {
     }
 
     checkToken(token: string) {
-        console.log("tokentoken", token)
+        console.log(token);
         const data = this.jwtService.verify(token, {
             audience: this.AUDIENCE,
             issuer: this.ISSUER
         });
-        console.log("datadatadata", data)
         return data;
     }
 

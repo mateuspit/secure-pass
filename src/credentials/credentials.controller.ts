@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, ExecutionContext, Get, HttpStatus, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
 import { CredentialsService } from './credentials.service';
 import { credentialsDTO } from './DTO/credentials.DTO';
 import { AuthGuard } from "../guards/auth.guards";
@@ -7,6 +7,7 @@ import { User } from "../decorators/user.decorator";
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags("Credentials routes")
+@UseGuards(AuthGuard)
 @Controller('credentials')
 @ApiBearerAuth()
 export class CredentialsController {
