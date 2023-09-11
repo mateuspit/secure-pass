@@ -13,6 +13,7 @@ import { UsersRepository } from "../users/users.repository";
         secret: process.env.JWT_SECRET
     })],
     providers: [AuthService, AuthRepository, UsersService, UsersRepository],
-    controllers: [AuthController]
+    controllers: [AuthController],
+    exports: [AuthService]
 })
 export class AuthModule { }
